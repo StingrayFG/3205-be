@@ -11,12 +11,13 @@ const testController = {
 
   getData: async (req: Request, res: Response) => {
     // Находим запись в файле
-    const data: testBody = testData.find((element: testBody) => element.email === req.body.email);
+    const data: testBody = testData.find((element: testBody) => 
+    ((element.email === req.body.email) && (element.number === req.body.number)));
 
     // Получаем unix дату последнего запроса для ip с которого пришел запрос
     const latestRequestDate: number = cache.get(String(req.headers['x-forwarded-for'])) || Date.now();
 
-    if (Date.now() > latestRequestDate) {
+    if ((Date.now() + 50) > latestRequestDate) {
       // Если текущая unix дата больше, чем та что сохранена в кэше, то этот запрос самый свежий.
       if (data) {
         return res.send(data);
